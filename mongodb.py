@@ -1,3 +1,4 @@
+from datetime import datetime
 from pymongo import AsyncMongoClient
 
 class Mongodb:
@@ -8,6 +9,8 @@ class Mongodb:
         print("Connected to MongoDB")
 
     async def insert_transaction(self, transaction_data):
+        current_time = datetime.now().isoformat() + "Z"
+        transaction_data['created_at'] = current_time
         result = await self.collection.insert_one(transaction_data)
         return str(result.inserted_id)
 

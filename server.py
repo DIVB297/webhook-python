@@ -45,7 +45,7 @@ def read_root():
     current_time = datetime.now().isoformat() + "Z"
     return {"status": "healthy", "current_time": current_time}
 
-@app.post("/v1/webhooks/transactions")
+@app.post("/v1/webhooks/transactions", status_code=202)
 async def handle_webhook(payload: TransactionRequest, background_tasks: BackgroundTasks):
     # Process the incoming webhook payload
     try:
@@ -73,8 +73,8 @@ async def get_transaction(transaction_id: str):
     try:
         transaction = await db.get_transaction(transaction_id)
         if not transaction:
-            return {"status": "error", "message": "Transaction not found"}
-        return {"status": "success", "data": transaction}
+            return []
+        return [transaction]
     except Exception as e:
         return {"status":"failed", "message": "Something went wrong", "error": str(e)}
 
